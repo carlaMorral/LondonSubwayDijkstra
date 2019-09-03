@@ -1,9 +1,7 @@
 import networkx as nx
-from util import get_subway_graph, draw_subway_graph
-G = nx.Graph()
-G, lines = get_subway_graph('csv', nx.graph.Graph)
-
 import heapq
+from util import get_subway_graph, draw_subway_graph
+
 def dijkstra(G, origen, destino, infinity=float('inf')):
     
     Q = set(G.nodes())
@@ -193,3 +191,16 @@ def dijkstra3(G, origen, infinity=float('inf')):
                     heapq.heappush(H, (alt, neightbor))
     
     return dist
+    
+if __name__ == '__main__':
+
+    G = nx.Graph()
+    G, lines = get_subway_graph('csv', nx.graph.Graph)
+    G.edge[1][52]
+    G.node[124]
+    draw_subway_graph(G, lines, figsize=(10,6))
+    dijkstra(G, 10, 235)
+    dijkstra2(G, 10, 235)
+    dist_mat(G)
+    
+
