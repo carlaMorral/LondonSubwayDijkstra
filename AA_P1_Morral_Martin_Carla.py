@@ -1,28 +1,11 @@
-
-# In[1]:
-
 import networkx as nx
 from util import get_subway_graph, draw_subway_graph
 G = nx.Graph()
 G, lines = get_subway_graph('csv', nx.graph.Graph)
-G.edge[1][52]
-
-# In[2]:
-
-G.node[124]
-
-# In[4]:
-
-draw_subway_graph(G, lines, figsize=(10,6))
-
-# In[11]:
 
 import heapq
 def dijkstra(G, origen, destino, infinity=float('inf')):
     
-    """
-    Encuentra el camino mínimo entre dos nodos.
-    """
     Q = set(G.nodes())
     
     H = [] 
@@ -80,14 +63,6 @@ def construct_path(G, prev, destino, expanded, origen, dist):
         'distance': dist[destino]
     }
 
-
-# In[12]:
-
-dijkstra(G, 10, 235)
-
-
-# In[15]:
-
 def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
     
     linies = {node:[] for node in G.nodes()}
@@ -126,7 +101,7 @@ def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
         
         if(dist[parent] == infinity): return "Grafo inconexo"
         if(parent[0] == destino): 
-            return construct_path3(prev, destino, expanded, origen, dist, parent[1])
+            return construct_path2(prev, destino, expanded, origen, dist, parent[1])
 
         for neighbor in G.neighbors(parent[0]):
 
@@ -155,12 +130,8 @@ def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
                         heapq.heappush(H, (alt, neighbor_node))
                         
 
-def construct_path3(prev, destino, expanded, origen, dist, linia):
+def construct_path2(prev, destino, expanded, origen, dist, linia):
     
-    """
-    Reconstruye el camino desde el nodo destino hasta el nodo origen.
-    """
-
     path = [] 
     node = prev[(destino, linia)]
     path.append(destino)
@@ -179,12 +150,6 @@ def construct_path3(prev, destino, expanded, origen, dist, linia):
         'expanded': expanded,
         'distance': dist[(destino,linia)]
     }
-
-# In[16]:
-
-dijkstra2(G, 10, 235)
-
-# In[21]:
 
 def dist_mat(G):
     
@@ -228,8 +193,3 @@ def dijkstra3(G, origen, infinity=float('inf')):
                     heapq.heappush(H, (alt, neightbor))
     
     return dist
-
-
-# In[22]:
-
-dist_mat(G)
