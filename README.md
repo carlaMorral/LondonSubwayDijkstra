@@ -1,2 +1,2 @@
 # LondonSubwayDisjkstra
-Dijkstra algorithm implementation plus an interesting variant in which transfers are penalised.
+Dijkstra algorithm implementation plus an interesting variant in which transfers are penalized.
