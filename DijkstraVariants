@@ -50,7 +50,7 @@ def dijkstra(G, origen, destino, infinity=float('inf')):
 def construct_path(G, prev, destino, expanded, origen, dist):
       
     """
-    Outputs the path from origin to destiny, the number of expended nodes and the min distance between the origin and destiny
+    Outputs the path from origin to destiny, the number of expanded nodes and the min distance between the origin and destiny
     nodes.
     """
       
@@ -156,7 +156,7 @@ def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
 def construct_path2(prev, destino, expanded, origen, dist, linia):
     
     """
-    Outputs the path from origin to destiny, the number of expended nodes and the min distance between the origin and destiny
+    Outputs the path from origin to destiny, the number of expanded nodes and the min distance between the origin and destiny
     nodes.
     """
     
