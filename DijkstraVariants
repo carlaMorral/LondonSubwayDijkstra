@@ -3,6 +3,10 @@ import heapq
 from util import get_subway_graph, draw_subway_graph
 
 def dijkstra(G, origen, destino, infinity=float('inf')):
+
+    """
+    Dijkstra algorithm implementation using heapq.
+    """
     
     Q = set(G.nodes())
     
@@ -28,7 +32,7 @@ def dijkstra(G, origen, destino, infinity=float('inf')):
 
         expanded += 1
 
-        if(dist[parent] == infinity): return "Grafo inconexo"
+        if(dist[parent] == infinity): return "Inconnex graph, no path from origin to destiny"
         if(parent == destino): 
             return construct_path(G, prev, destino, expanded, origen, dist)
 
@@ -44,6 +48,11 @@ def dijkstra(G, origen, destino, infinity=float('inf')):
                         
 
 def construct_path(G, prev, destino, expanded, origen, dist):
+      
+    """
+    Outputs the path from origin to destiny, the number of expended nodes and the min distance between the origin and destiny
+    nodes.
+    """
       
     path = [] 
     node = prev[destino]
@@ -62,19 +71,27 @@ def construct_path(G, prev, destino, expanded, origen, dist):
     }
 
 def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
+
+    """
+    Dijkstra variant in which transfers are penalized (penalty is added to the distance between node A and node B if it is
+    required to do a transfer in the path).
+    """
     
+    #Create a dict<node, list> to hold the lines of each node (station).
     linies = {node:[] for node in G.nodes()}
     for node in G.nodes():
         for neighbor in G.neighbors(node):
             if(G.edge[node][neighbor]['line'] not in linies[node]):
                 linies[node].append(G.edge[node][neighbor]['line'])
-                
+          
+    #Two nodes are the same if and only if (station_1, line_1)==(station_2, line_2)
     Q = []
     for node in linies:
         for i in linies[node]:
             Q.append((node, i))
     Q = set(Q)
     
+    #Initialize the heap H, distance dict, prev dict (to save the nodes' parents) and the expanded variable.
     H = [] 
     dist = {}
     prev = {}
@@ -89,6 +106,7 @@ def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
             heapq.heappush(H, (infinity, node))
         prev[node] = None
     
+    #Start the algorithm
     while len(Q) != 0:
 
         parent = heapq.heappop(H)[1]
@@ -97,14 +115,19 @@ def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
 
         expanded += 1
         
-        if(dist[parent] == infinity): return "Grafo inconexo"
+        #Exit conditions
+        if(dist[parent] == infinity): return "Inconnex graph, no path from origin to destiny"
         if(parent[0] == destino): 
             return construct_path2(prev, destino, expanded, origen, dist, parent[1])
-
+        
+        #Do the same as in "normal" dijkstra.
         for neighbor in G.neighbors(parent[0]):
 
             neighbor_node = (neighbor,parent[1])
 
+            #Two nodes are treated as neighbors if and only if:
+            #There exists and edge between them in the graph and
+            #The parent's line is the same as the neighbor's line.
             if neighbor_node in Q and G.edge[neighbor][parent[0]]['line'] == parent[1]:
 
                 alt = dist[parent] + G.edge[parent[0]][neighbor_node[0]]['distance']
@@ -114,6 +137,8 @@ def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
                     prev[neighbor_node] = parent
                     heapq.heappush(H, (alt, neighbor_node))
 
+        #New code block to check is penalty has to be added to the current distance.
+        #Visit the nodes that don't keep to the second condition stated above but they do with the first one.
         for i in range(0,len(linies[parent[0]])):
 
             neighbor_node = (parent[0],linies[parent[0]][i])
@@ -129,6 +154,11 @@ def dijkstra2(G, origen, destino, penalty=5000000, infinity=float('inf')):
                         
 
 def construct_path2(prev, destino, expanded, origen, dist, linia):
+    
+    """
+    Outputs the path from origin to destiny, the number of expended nodes and the min distance between the origin and destiny
+    nodes.
+    """
     
     path = [] 
     node = prev[(destino, linia)]
@@ -148,50 +178,7 @@ def construct_path2(prev, destino, expanded, origen, dist, linia):
         'expanded': expanded,
         'distance': dist[(destino,linia)]
     }
-
-def dist_mat(G):
-    
-    result = {}
-    
-    for node in G.nodes():
-        result[node] = dijkstra3(G,node)
-    
-    return result
-    
-    
-def dijkstra3(G, origen, infinity=float('inf')):
-    
-    Q = set(G.nodes())
-    H = [] 
-    dist = {}
-    expanded = 0
-
-    for node in G.nodes():
-        if node == origen:
-            dist[node] = 0   
-            heapq.heappush(H, (0, node))
-        else:
-            dist[node] = infinity
-            heapq.heappush(H, (infinity, node))
-    
-    while len(Q) != 0:
-        
-        parent = heapq.heappop(H)[1]
-        
-        Q.discard(parent)
-
-        expanded += 1
-
-        for neightbor in G.neighbors(parent):
-            if neightbor in Q:
-                alt = dist[parent] + G.edge[parent][neightbor]['distance']
-
-                if alt < dist[neightbor]:
-                    dist[neightbor] = alt
-                    heapq.heappush(H, (alt, neightbor))
-    
-    return dist
-    
+  
 if __name__ == '__main__':
 
     G = nx.Graph()
